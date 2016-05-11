@@ -13,7 +13,7 @@ public class Gen_Ackley {
 
 		
 		candidate_container x = new candidate_container(dim, count_candidates);
-		for(int i = 0; i < 100000; i++){
+		for(int i = 0; i < 10000; i++){
 			x.calc_survivability();
 			for(candidate c : x.p){
 				System.out.print(c.survivability+"("+c.ackley()+"," + c.val[0]+ ")" + ";");
@@ -21,7 +21,7 @@ public class Gen_Ackley {
 			}
 			System.out.println(" ");	
 			x.selection();
-			
+			x.recombination();
 			x.mutation();
 			if(x.best_fitness().fitness() > best_fitness.fitness()) best_fitness = x.best_fitness();
 		}
@@ -58,10 +58,19 @@ class candidate_container{
 			for(int j = 0; j < p[0].dim; j++){
 				int x = Gen_Ackley.rng.nextInt(this.dim);
 				if(x == 5){
-					p[i].val[j] = Gen_Ackley.rng.nextDouble() * 80 - 40;
+					p[i].val[j] = p[i].code(Gen_Ackley.rng.nextDouble() * 80 - 40);
 				}
 			}
 		}
+	}
+	
+	public void recombination(){
+		candidate[] x = new candidate[p.length];
+		for(int i = 0; i < p.length; i++){
+			int rnd = Gen_Ackley.rng.nextInt(p.length);
+			x[i] = p[i].recombineOnePointCross(p[rnd]);
+		}
+		this.p = x;
 	}
 	
 	public void selection(){
@@ -192,7 +201,9 @@ class candidate {
 		int xmax = this.xmax;
 		double epsilon = 0.001;
 		int k = (int)(Math.ceil(Math.log((xmax-xmin)/epsilon)/Math.log(2)));
+		//System.out.println(k);
 		int z = (int)((x-xmin)/(xmax-xmin)*(Math.pow(2, k) - 1));
+		//System.out.println(z);
 		return z;
 	}
 	public candidate recombineOnePointCross(candidate parent)

@@ -156,13 +156,13 @@ class candidate {
 	public double ackley(){
 		double sum1 = 0.0;
 		double sum2 = 0.0;
-		
-		for (int i = 0 ; i < this.val.length ; i ++) {
-			sum1 += Math.pow(this.val[i], 2);
-			sum2 += (Math.cos(2*Math.PI*this.val[i]));
+		double[] values = this.decode();
+		for (int i = 0 ; i < values.length ; i ++) {
+			sum1 += Math.pow(values[i], 2);
+			sum2 += (Math.cos(2*Math.PI*values[i]));
 		}
-		return -20.0*Math.exp(-0.2*Math.sqrt(sum1 / ((double )this.val.length)))  
-				- Math.exp(sum2 /((double )this.val.length))+ 20 + Math.exp(1.0);
+		return -20.0*Math.exp(-0.2*Math.sqrt(sum1 / ((double )values.length)))  
+				- Math.exp(sum2 /((double )values.length))+ 20 + Math.exp(1.0);
 	}
 	
 	
@@ -180,7 +180,7 @@ class candidate {
 	    int xmin = -40;
 	    int xmax = 40;
 	    double eps = 0.001;
-	    int count_steps = (int)(xmax-xmin/eps);
+
 	    int k = (int)Math.ceil(Math.log((xmax - xmin))/Math.log(2));
 	    double[] ret = new double[this.dim];
 	    for(int i = 0; i < ret.length; i++){

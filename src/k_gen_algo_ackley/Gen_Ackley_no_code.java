@@ -6,8 +6,25 @@ public class Gen_Ackley_no_code {
 	
 	public static Random rng = new Random();
 	
+	public static double median(double[] x){
+		double sum = 0;
+		for(int i = 0; i < x.length; i++){
+			sum+=x[i];
+		}
+		return sum / x.length;
+	}
+	
+	public static double standard_deviation(double[] x){
+		double sum = 0;
+		double median = median(x);
+		for(int i = 0; i < x.length; i++){
+			sum += Math.pow(x[i]-median,2);
+		}
+		return Math.sqrt(sum/x.length);
+	}
+		
 	public static void main(String[] args){
-		int count_candidate_ncs = 100;
+		int count_candidate_ncs = 10;
 		int dim = 6;
 		candidate_nc best_fitness = new candidate_nc(dim);
 
@@ -22,7 +39,7 @@ public class Gen_Ackley_no_code {
 			System.out.println(" ");	
 			x.selection();
 			x.recombination();
-			x.mutation();
+			//x.mutation();
 			if(x.best_fitness().fitness() > best_fitness.fitness()) best_fitness = x.best_fitness();
 		}
 		
@@ -105,12 +122,24 @@ class candidate_nc_container_nc{
 	}
 	
 	public void calc_survivability(){
+		double[] fitnesses = new double[p.length];
+		for(int i = 0; i < p.length; i++){
+			fitnesses[i] = p[i].fitness();
+		}
+		double median = Gen_Ackley_no_code.median(fitnesses);
+		double deviation = Gen_Ackley_no_code.standard_deviation(fitnesses);
+		double sigma = median - 1 * deviation;
 		double sum_fitnesses = 0;
 		for(int i = 0; i < p.length; i++){
-			sum_fitnesses += p[i].fitness();
-		}
+			sum_fitnesses += p[i].fitness;
+			
+			if(p[i].fitness >= sigma){
+			p[i].fitness = p[i].fitness-sigma;
+			}else p[i].fitness = 0;
+			}
+		
 		for(candidate_nc c : p){
-			c.survivability = c.fitness()/sum_fitnesses;
+			c.survivability = c.fitness/sum_fitnesses;
 		}
 	}
 }
@@ -157,7 +186,7 @@ class candidate_nc {
 	public double fitness(){
 		double x = (1 - ackley()/30) * 1000;
 		if(x < 0) x = 0;
-		if(x > 1000) x = 1000;
+		if(x > 100000) x = 1000;
 		return x;
 	}
 	

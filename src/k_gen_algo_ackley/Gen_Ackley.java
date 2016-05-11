@@ -13,7 +13,7 @@ public class Gen_Ackley {
 
 		
 		candidate_container x = new candidate_container(dim, count_candidates);
-		for(int i = 0; i < 1000000; i++){
+		for(int i = 0; i < 100000; i++){
 			x.calc_survivability();
 			for(candidate c : x.p){
 				//System.out.print(c.survivability+"("+c.ackley()+")" + ";");
@@ -180,7 +180,6 @@ class candidate {
 	    int xmin = -40;
 	    int xmax = 40;
 	    double eps = 0.001;
-
 	    int k = (int)Math.ceil(Math.log((xmax - xmin))/Math.log(2));
 	    double[] ret = new double[this.dim];
 	    for(int i = 0; i < ret.length; i++){
@@ -197,5 +196,19 @@ class candidate {
 		double z = (int)((x-xmin)/(xmax-xmin)*Math.pow(2, k - 1));
 		return z;
 	}
+	
+	public candidate recombineOnePointCross(candidate parent)
+	{
+		double[] valChild = new double[6];
+		valChild[0] = val[0];
+		valChild[1] = val[1];
+		valChild[2] = val[2];
+		valChild[3] = parent.val[3];
+		valChild[4] = parent.val[4];
+		valChild[5] = parent.val[5];
+		candidate child = new candidate(valChild);
+		return child;
+	}
+	
 	
 }

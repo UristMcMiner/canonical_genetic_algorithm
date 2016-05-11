@@ -175,4 +175,13 @@ class candidate {
 		
 		return sb.toString();
 	}
+	public double code(double x){
+		int xmin = -40;
+		int xmax = 40;
+		double epsilon = 0.001;
+		int k = (int)(Math.ceil(Math.log((xmax-xmin)/epsilon)/Math.log(2)));
+		double z = (int)((x-xmin)/(xmax-xmin)*Math.pow(2, k - 1));
+		return z;
+	}
+	
 }

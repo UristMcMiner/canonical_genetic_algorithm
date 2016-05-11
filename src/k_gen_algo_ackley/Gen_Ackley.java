@@ -16,20 +16,17 @@ public class Gen_Ackley {
 		for(int i = 0; i < 100000; i++){
 			x.calc_survivability();
 			for(candidate c : x.p){
-				//System.out.print(c.survivability+"("+c.ackley()+")" + ";");
+				System.out.print(c.survivability+"("+c.ackley()+"," + c.val[0]+ ")" + ";");
 			
 			}
-			//System.out.println(" ");	
+			System.out.println(" ");	
 			x.selection();
+			
 			x.mutation();
 			if(x.best_fitness().fitness() > best_fitness.fitness()) best_fitness = x.best_fitness();
 		}
 		
-		System.out.println(best_fitness);
-		
-		
-		
-		
+		System.out.println(best_fitness);	
 	}
 	
 }
@@ -111,6 +108,8 @@ class candidate_container{
 
 
 class candidate {
+	public int xmin = -40;
+	public int xmax = 40;
 	public double[] val;
 	public int dim;
 	public double fitness;
@@ -129,7 +128,7 @@ class candidate {
 		double[] val = new double[dim];
 		
 		for(int i = 0; i < dim; i++){
-			val[i] = Gen_Ackley.rng.nextDouble() * 80 - 40;
+			val[i] = code(Gen_Ackley.rng.nextDouble() * 80 - 40);
 		}
 		
 		this.val = val;
@@ -177,8 +176,8 @@ class candidate {
 	}
 	
 	public double[] decode(){
-	    int xmin = -40;
-	    int xmax = 40;
+	    int xmin = this.xmin;
+	    int xmax = this.xmax;
 	    double eps = 0.001;
 	    int k = (int)Math.ceil(Math.log((xmax - xmin))/Math.log(2));
 	    double[] ret = new double[this.dim];
@@ -189,14 +188,13 @@ class candidate {
 	}
 	
 	public double code(double x){
-		int xmin = -40;
-		int xmax = 40;
+		int xmin = this.xmin;
+		int xmax = this.xmax;
 		double epsilon = 0.001;
 		int k = (int)(Math.ceil(Math.log((xmax-xmin)/epsilon)/Math.log(2)));
-		int z = (int)((x-xmin)/(xmax-xmin)*Math.pow(2, k) - 1);
+		int z = (int)((x-xmin)/(xmax-xmin)*Math.pow(2, k - 1));
 		return z;
 	}
-	
 	public candidate recombineOnePointCross(candidate parent)
 	{
 		double[] valChild = new double[6];
@@ -209,6 +207,6 @@ class candidate {
 		candidate child = new candidate(valChild);
 		return child;
 	}
-	
-	
 }
+	
+	

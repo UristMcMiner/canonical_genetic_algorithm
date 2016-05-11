@@ -192,7 +192,7 @@ class candidate {
 		int xmax = this.xmax;
 		double epsilon = 0.001;
 		int k = (int)(Math.ceil(Math.log((xmax-xmin)/epsilon)/Math.log(2)));
-		int z = (int)((x-xmin)/(xmax-xmin)*Math.pow(2, k - 1));
+		int z = (int)((x-xmin)/(xmax-xmin)*(Math.pow(2, k) - 1));
 		return z;
 	}
 	public candidate recombineOnePointCross(candidate parent)

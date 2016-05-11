@@ -175,6 +175,20 @@ class candidate {
 		
 		return sb.toString();
 	}
+	
+	public double[] decode(){
+	    int xmin = -40;
+	    int xmax = 40;
+	    double eps = 0.001;
+	    int count_steps = (int)(xmax-xmin/eps);
+	    int k = (int)Math.ceil(Math.log((xmax - xmin))/Math.log(2));
+	    double[] ret = new double[this.dim];
+	    for(int i = 0; i < ret.length; i++){
+	      ret[i] = ((this.val[i]/(Math.pow(2, k)-1))) * (xmax - xmin) + xmin;
+	    }
+	    return ret;
+	}
+	
 	public double code(double x){
 		int xmin = -40;
 		int xmax = 40;

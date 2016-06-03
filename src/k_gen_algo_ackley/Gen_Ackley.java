@@ -57,14 +57,6 @@ class candidate_container{
 	}
 	
 	public void mutation(){
-		for(int i = 0; i < p.length; i++ ){
-			for(int j = 0; j < p[0].dim; j++){
-				int x = Gen_Ackley.rng.nextInt(this.dim);
-				if(x == 5){
-					p[i].val[j] = Gen_Ackley.rng.nextDouble() * 80 - 40;
-				}
-			}
-		}
 	}
 	
 	public void selection(){
@@ -111,7 +103,9 @@ class candidate_container{
 
 
 class candidate {
-	public double[] val;
+	private Random rng;
+	private double[] val;
+	private int[] val_enc;
 	public int dim;
 	public double fitness;
 	public double survivability;
@@ -123,6 +117,8 @@ class candidate {
 		}
 		this.dim = val.length;
 		this.fitness = this.fitness();
+		this.encode();
+		this.rng = new Random();
 	}
 	
 	public candidate(int dim){
@@ -135,7 +131,26 @@ class candidate {
 		this.val = val;
 		this.dim = dim;
 		this.fitness = this.fitness();
+		this.encode();
+		this.rng = new Random();
 	}
+	
+	//Encodes val to val_enc
+	private void encode(){
+		
+	}
+	//Decodes val_enc to val
+	private void decode(){
+		
+	}
+	
+	public void mutate(){
+		int selector = rng.nextInt(dim);
+		for(int i = 0; i < this.dim; i++){
+			
+		}
+	}
+	
 	public void copy_vals(candidate copy_to){
 		for(int i = 0; i < dim; i++){
 			copy_to.val[i] = this.val[i];

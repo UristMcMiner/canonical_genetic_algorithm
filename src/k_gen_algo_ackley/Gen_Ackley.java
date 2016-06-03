@@ -54,13 +54,11 @@ class candidate_container{
 	}
 	
 	public void mutation(){
-<<<<<<< HEAD
-=======
 		for(int i = 0; i < p.length; i++ ){
 			for(int j = 0; j < p[0].dim; j++){
 				int x = Gen_Ackley.rng.nextInt(this.dim);
 				if(x == 5){
-					p[i].val[j] = p[i].code(Gen_Ackley.rng.nextDouble() * 80 - 40);
+					p[i].val[j] = p[i].encode_old(Gen_Ackley.rng.nextDouble() * 80 - 40);
 				}
 			}
 		}
@@ -73,7 +71,6 @@ class candidate_container{
 			x[i] = p[i].recombineOnePointCross(p[rnd]);
 		}
 		this.p = x;
->>>>>>> branch 'master' of https://github.com/UristMcMiner/canonical_genetic_algorithm
 	}
 	
 	public void selection(){
@@ -121,8 +118,8 @@ class candidate_container{
 
 class candidate {
 	private Random rng;
-	private double[] val;
-	private int[] val_enc;
+	public double[] val;
+	public int[] val_enc;
 	public int xmin = -40;
 	public int xmax = 40;
 	public int dim;
@@ -141,17 +138,16 @@ class candidate {
 	}
 	
 	public candidate(int dim){
-		double[] val = new double[dim];
-		
+		this.rng = new Random();
+		double[] val = new double[dim];				
 		for(int i = 0; i < dim; i++){
-			val[i] = code(Gen_Ackley.rng.nextDouble() * 80 - 40);
+			val[i] = rng.nextDouble() * 80 - 40;
 		}
-		
 		this.val = val;
 		this.dim = dim;
 		this.fitness = this.fitness();
 		this.encode();
-		this.rng = new Random();
+
 	}
 	
 	//Encodes val to val_enc
@@ -190,13 +186,13 @@ class candidate {
 	public double ackley(){
 		double sum1 = 0.0;
 		double sum2 = 0.0;
-		double[] values = this.decode();
-		for (int i = 0 ; i < values.length ; i ++) {
-			sum1 += Math.pow(values[i], 2);
-			sum2 += (Math.cos(2*Math.PI*values[i]));
+		double[] values;
+		for (int i = 0 ; i < val.length ; i ++) {
+			sum1 += Math.pow(val[i], 2);
+			sum2 += (Math.cos(2*Math.PI*val[i]));
 		}
-		return -20.0*Math.exp(-0.2*Math.sqrt(sum1 / ((double )values.length)))  
-				- Math.exp(sum2 /((double )values.length))+ 20 + Math.exp(1.0);
+		return -20.0*Math.exp(-0.2*Math.sqrt(sum1 / ((double )val.length)))  
+				- Math.exp(sum2 /((double )val.length))+ 20 + Math.exp(1.0);
 	}
 	
 	
@@ -210,7 +206,7 @@ class candidate {
 		return sb.toString();
 	}
 	
-	public double[] decode(){
+	public double[] decode_old(){
 	    int xmin = this.xmin;
 	    int xmax = this.xmax;
 	    double eps = 0.001;
@@ -222,7 +218,7 @@ class candidate {
 	    return ret;
 	}
 	
-	public double code(double x){
+	public double encode_old(double x){
 		int xmin = this.xmin;
 		int xmax = this.xmax;
 		double epsilon = 0.001;

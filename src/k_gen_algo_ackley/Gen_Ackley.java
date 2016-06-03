@@ -13,23 +13,20 @@ public class Gen_Ackley {
 
 		
 		candidate_container x = new candidate_container(dim, count_candidates);
-		for(int i = 0; i < 1000000; i++){
+		for(int i = 0; i < 10000; i++){
 			x.calc_survivability();
 			for(candidate c : x.p){
-				//System.out.print(c.survivability+"("+c.ackley()+")" + ";");
+				System.out.print(c.survivability+"("+c.ackley()+"," + c.val[0]+ ")" + ";");
 			
 			}
-			//System.out.println(" ");	
+			System.out.println(" ");	
 			x.selection();
+			x.recombination();
 			x.mutation();
 			if(x.best_fitness().fitness() > best_fitness.fitness()) best_fitness = x.best_fitness();
 		}
 		
-		System.out.println(best_fitness);
-		
-		
-		
-		
+		System.out.println(best_fitness);	
 	}
 	
 }
@@ -57,6 +54,26 @@ class candidate_container{
 	}
 	
 	public void mutation(){
+<<<<<<< HEAD
+=======
+		for(int i = 0; i < p.length; i++ ){
+			for(int j = 0; j < p[0].dim; j++){
+				int x = Gen_Ackley.rng.nextInt(this.dim);
+				if(x == 5){
+					p[i].val[j] = p[i].code(Gen_Ackley.rng.nextDouble() * 80 - 40);
+				}
+			}
+		}
+	}
+	
+	public void recombination(){
+		candidate[] x = new candidate[p.length];
+		for(int i = 0; i < p.length; i++){
+			int rnd = Gen_Ackley.rng.nextInt(p.length);
+			x[i] = p[i].recombineOnePointCross(p[rnd]);
+		}
+		this.p = x;
+>>>>>>> branch 'master' of https://github.com/UristMcMiner/canonical_genetic_algorithm
 	}
 	
 	public void selection(){
@@ -106,6 +123,8 @@ class candidate {
 	private Random rng;
 	private double[] val;
 	private int[] val_enc;
+	public int xmin = -40;
+	public int xmax = 40;
 	public int dim;
 	public double fitness;
 	public double survivability;
@@ -125,7 +144,7 @@ class candidate {
 		double[] val = new double[dim];
 		
 		for(int i = 0; i < dim; i++){
-			val[i] = Gen_Ackley.rng.nextDouble() * 80 - 40;
+			val[i] = code(Gen_Ackley.rng.nextDouble() * 80 - 40);
 		}
 		
 		this.val = val;
@@ -171,13 +190,13 @@ class candidate {
 	public double ackley(){
 		double sum1 = 0.0;
 		double sum2 = 0.0;
-		
-		for (int i = 0 ; i < this.val.length ; i ++) {
-			sum1 += Math.pow(this.val[i], 2);
-			sum2 += (Math.cos(2*Math.PI*this.val[i]));
+		double[] values = this.decode();
+		for (int i = 0 ; i < values.length ; i ++) {
+			sum1 += Math.pow(values[i], 2);
+			sum2 += (Math.cos(2*Math.PI*values[i]));
 		}
-		return -20.0*Math.exp(-0.2*Math.sqrt(sum1 / ((double )this.val.length)))  
-				- Math.exp(sum2 /((double )this.val.length))+ 20 + Math.exp(1.0);
+		return -20.0*Math.exp(-0.2*Math.sqrt(sum1 / ((double )values.length)))  
+				- Math.exp(sum2 /((double )values.length))+ 20 + Math.exp(1.0);
 	}
 	
 	
@@ -190,4 +209,41 @@ class candidate {
 		
 		return sb.toString();
 	}
+	
+	public double[] decode(){
+	    int xmin = this.xmin;
+	    int xmax = this.xmax;
+	    double eps = 0.001;
+	    int k = (int)Math.ceil(Math.log((xmax - xmin))/Math.log(2));
+	    double[] ret = new double[this.dim];
+	    for(int i = 0; i < ret.length; i++){
+	      ret[i] = ((this.val[i]/(Math.pow(2, k)-1))) * (xmax - xmin) + xmin;
+	    }
+	    return ret;
+	}
+	
+	public double code(double x){
+		int xmin = this.xmin;
+		int xmax = this.xmax;
+		double epsilon = 0.001;
+		int k = (int)(Math.ceil(Math.log((xmax-xmin)/epsilon)/Math.log(2)));
+		//System.out.println(k);
+		int z = (int)((x-xmin)/(xmax-xmin)*(Math.pow(2, k) - 1));
+		//System.out.println(z);
+		return z;
+	}
+	public candidate recombineOnePointCross(candidate parent)
+	{
+		double[] valChild = new double[6];
+		valChild[0] = val[0];
+		valChild[1] = val[1];
+		valChild[2] = val[2];
+		valChild[3] = parent.val[3];
+		valChild[4] = parent.val[4];
+		valChild[5] = parent.val[5];
+		candidate child = new candidate(valChild);
+		return child;
+	}
 }
+	
+	
